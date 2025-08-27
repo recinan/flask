@@ -1,11 +1,38 @@
-from flask import Flask, request, make_response
+from flask import Flask, request, make_response, render_template,redirect,url_for
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder='templates')
 
 @app.route('/')
 def index():
-    return "<h1>Hello World</h1>"
+    myValue = 'NeuralNine'
+    myresult = 10 + 20
+    myList = [10,20,30,40,50]
+    return render_template('index.html', myList=myList)
 
+@app.route('/other')
+def other():
+    return render_template('other.html')
+
+@app.route('/filter-example')
+def filter_example():
+    some_text = 'Hello World'
+    return render_template('filters.html', some_text=some_text)
+
+@app.route('/redirect_endpoint')
+def redirect_endpoint():
+    return redirect(url_for('other'))
+
+@app.template_filter('reverse_string')
+def reverse_string(s):
+    return s[::-1]
+
+@app.template_filter('repeat')
+def repeat(s, times=2):
+    return s*times
+
+@app.template_filter('alternate_cases')
+def alternate_case(s):
+    return ''.join([c.upper() if i % 2 == 0 else c.lower() for i, c in enumerate(s)])
 
 @app.route('/hello')
 def hello():
