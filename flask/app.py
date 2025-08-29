@@ -1,62 +1,51 @@
-from flask import Flask, request, make_response, render_template,redirect,url_for
+from flask import Flask, request, make_response, render_template,redirect,url_for, jsonify, send_from_directory
+import os
+from werkzeug.utils import secure_filename 
 
 app = Flask(__name__, template_folder='templates')
 
-@app.route('/')
+@app.route('/', methods=['GET','POST'])
 def index():
-    myValue = 'NeuralNine'
-    myresult = 10 + 20
-    myList = [10,20,30,40,50]
-    return render_template('index.html', myList=myList)
+    if request.method == 'GET':
+        return render_template('index.html')
+    elif request.method == 'POST':
+        username = request.form.get('username')
+        password = request.form.get('password')
 
-@app.route('/other')
-def other():
-    return render_template('other.html')
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+UPLOAD_FOLDER = os.path.join(BASE_DIR, "uploads")
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 
-@app.route('/filter-example')
-def filter_example():
-    some_text = 'Hello World'
-    return render_template('filters.html', some_text=some_text)
+@app.route('/file_upload', methods=["POST"])
+def file_upload():
+    file = request.files['file']
 
-@app.route('/redirect_endpoint')
-def redirect_endpoint():
-    return redirect(url_for('other'))
+    if file.filename == "":
+        return "File has not been selected", 400
 
-@app.template_filter('reverse_string')
-def reverse_string(s):
-    return s[::-1]
+    filename = secure_filename(file.filename)
+    file.save(os.path.join(app.config["UPLOAD_FOLDER"],filename))
+    return jsonify({"message":"File has been uploaded"})
+       
+@app.route('/file_download/<filename>', methods=["GET"])
+def file_download(filename):
+    return send_from_directory(
+        app.config["UPLOAD_FOLDER"],
+        filename,
+        as_attachment = True
+    )
 
-@app.template_filter('repeat')
-def repeat(s, times=2):
-    return s*times
+@app.route('/handle_post', methods=["POST"])
+def handle_post():
+    greeting = request.json['greeting']
+    name = request.json['name']
 
-@app.template_filter('alternate_cases')
-def alternate_case(s):
-    return ''.join([c.upper() if i % 2 == 0 else c.lower() for i, c in enumerate(s)])
+    with open('file.txt','w') as f:
+        f.write(f'{greeting}, {name}')
 
-@app.route('/hello')
-def hello():
-    response = make_response('Hello World\n')
-    response.status_code = 202
-    response.headers['content-type'] = 'text/plain'
-    return response
+    return jsonify({'message':'Successfully written!'})
 
-@app.route('/greet/<name>')
-def greet(name):
-    return f"Hello {name}"
-
-@app.route('/add/<int:number1>/<int:number2>')
-def add(number1, number2):
-    return f'{number1} + {number2} = {number1 + number2}'
-
-@app.route('/handle_url_params')
-def handle_params():
-    if 'greeting' in request.args.keys() and 'name' in request.args.keys():
-        greeting = request.args['greeting']
-        name = request.args.get('name')
-        return f'{greeting}, {name}'
-    else:
-        return 'Some parameters are missing!!'
 
 if __name__ == '__main__':
     app.run(host='127.0.0.1', port=5555, debug=True)
