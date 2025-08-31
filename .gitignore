@@ -1,2 +1,4 @@
 flask/env
 flask/__pycache__
+flask-db/env
+flask-db/__pycache__
