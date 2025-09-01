@@ -1,34 +1,57 @@
 from flask import render_template, request, redirect, url_for
-from models import Person
+from models import User
+from flask_login import login_user, logout_user, current_user, login_required
 
-def register_routes(app,db):
+
+def register_routes(app,db,bcrypt):
 
     @app.route('/', methods=['GET','POST'])
     def index():
+        return render_template('index.html')
+        
+    @app.route('/signup', methods=['GET','POST'])
+    def signup():
         if request.method == 'GET':
-            people = Person.query.all()
-            return render_template('index.html',people=people)
+            return render_template('signup.html')
         elif request.method == 'POST':
-            name = request.form.get('name')
-            age = int(request.form.get('age'))
-            job = request.form.get('job')
-            person = Person(name=name, age=age, job=job)
-            db.session.add(person)
+            username = request.form.get('username')
+            password = request.form.get('password1')
+            
+            hashed_password = bcrypt.generate_password_hash(password)
+
+            user = User(username=username, password=hashed_password)
+
+            db.session.add(user)
             db.session.commit()
 
-            people = Person.query.all()
             return redirect(url_for('index'))
-        
-    @app.route('/delete/<person_id>', methods=['DELETE'])
-    def delete_person(person_id):
-        deleted_person = Person.query.filter(Person.person_id==person_id)
-        deleted_person.delete()
 
-        db.session.commit()
-        people = Person.query.all()
-        return render_template('index.html', people=people)
+            
+    @app.route('/login', methods=['GET','POST'])
+    def login():
+        if request.method == 'GET':
+            return render_template('login.html')
+        elif request.method == 'POST':
+            username = request.form.get('username')
+            password = request.form.get('password1')
+
+            hashed_password = bcrypt.generate_password_hash(password)
+
+            user = User.query.filter(User.username == username).first()
+
+            if bcrypt.check_password_hash(user.password, password):
+                login_user(user)
+                return render_template('index.html')
+            else:
+                return 'faileddd'
+            
     
-    @app.route('/details/<person_id>', methods=['GET'])
-    def people_details(person_id):
-        person = Person.query.filter(Person.person_id==person_id).first()
-        return render_template('details.html', person=person)
+    @app.route('/logout')
+    def logout():
+        logout_user()
+        return 'Success'
+
+    @app.route('/secret')
+    @login_required
+    def secret():
+        return 'My secret message!'
