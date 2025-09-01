@@ -1,5 +1,2 @@
-flask/env
-flask/__pycache__
-flask-db/env
-flask-db/__pycache__
-./__pycache__
+env
+__pycache__
