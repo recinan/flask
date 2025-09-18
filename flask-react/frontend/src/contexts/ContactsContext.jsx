@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import { createContext, useContext, useState} from "react";
+import { getContacts, createContact, updateContact, deleteContact } from "../services/contactService";
 
 const ContactsContext = createContext();
 
@@ -10,8 +11,7 @@ export const ContactsProvider = ({children}) => {
     const [currentContact, setCurrentContact] = useState({})
 
     const fetchContacts = async () => {
-        const response = await fetch("http://127.0.0.1:5000/contacts")
-        const data = await response.json()
+        const data = await getContacts()
         setContacts(data.contacts)
         setLoading(false);
     };
@@ -43,40 +43,36 @@ export const ContactsProvider = ({children}) => {
     }
 
     const saveContact = async (contact, existingContact) => {
-        const updating = Object.entries(existingContact).length !== 0;
-        const url = "http://127.0.0.1:5000/" + (updating ? `update_contact/${existingContact.id}` : "create_contact")
-
-        const options = {
-            method: updating ? "PATCH" : "POST",
-            headers: {
-                "Content-Type":"application/json",
-            },
-            body: JSON.stringify(contact),
+        try{
+            let response;
+            if(Object.keys(existingContact).length !== 0){
+                response = await updateContact(existingContact.id, contact);
+            }else{
+                response = await createContact(contact)
+            }
+            if(response.status !== 201 && response.status !== 200){
+                const err = await response.json()
+                alert (err.message)
+                return false;
+            }else{
+                onUpdate();
+                return true;
+            }
         }
-
-        const response = await fetch(url, options);
-        if(response.status !== 201 && response.status !== 200){
-            const err = await response.json()
-            alert (err.message)
-            return false;
-        }else{
-            onUpdate();
-            return true;
-        }
+        catch(err){console.log(err)}
+        finally{}    
     }
+        
 
     const onDelete = async(id) => {
         try{
-            const options = {
-            method: "DELETE"
-        }
-        const response = await fetch(`http://127.0.0.1:5000/delete_contact/${id}`, options);
-        
-        if(response.status === 200){
-            onUpdate()
-        }else{
-            console.log("Failed to delete")
-        }
+            const response = await deleteContact(id);
+            
+            if(response.status === 200){
+                onUpdate()
+            }else{
+                console.log("Failed to delete")
+            }
         }catch(err){
             alert(err)
             console.log(err)
