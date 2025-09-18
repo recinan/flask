@@ -5,6 +5,7 @@ from services.contact_service import (
     update_existing_contact,
     delete_existing_contact
 )
+from flask_cors import cross_origin
 
 contact_blueprint = Blueprint("contacts", __name__)
 

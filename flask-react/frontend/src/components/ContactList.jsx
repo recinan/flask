@@ -1,27 +1,8 @@
-import React from "react";
 
-const ContactList = ({contacts, updateContact, updateCallBack}) => {
+import { useContacts } from "../contexts/ContactsContext";
 
-    const onDelete = async (id) => {
-        try{
-            const options = {
-                method: "DELETE"
-            }
-            const response = await fetch(`http://127.0.0.1:5000/delete_contact/${id}`, options)
-            if(response.status === 200){
-                updateCallBack()
-            }else{
-                console.log("Failed to delete")
-            }
-        }catch(err){
-            alert(err)
-            console.log(err)
-        }
-        finally{
-
-        }
-    }
-
+function ContactList({updateContact}){
+    const { contacts, onDelete} = useContacts();
     return (
         <div>
             <h2>Contacts</h2>
@@ -36,7 +17,7 @@ const ContactList = ({contacts, updateContact, updateCallBack}) => {
                 </thead>
                 <tbody>
                     {contacts.map((contact) => (
-                        <tr key={contact.id}>
+                       <tr key={contact.id}>
                             <td>{contact.firstName}</td>
                             <td>{contact.lastName}</td>
                             <td>{contact.email}</td>
@@ -44,12 +25,13 @@ const ContactList = ({contacts, updateContact, updateCallBack}) => {
                                 <button onClick={() => updateContact(contact)}>Update</button>
                                 <button onClick={() => onDelete(contact.id)}>Delete</button>
                             </td>
-                        </tr>
+                       </tr>   
                     ))}
                 </tbody>
             </table>
         </div>
     )
+
 }
 
 export default ContactList;
