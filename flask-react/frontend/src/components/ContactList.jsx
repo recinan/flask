@@ -1,12 +1,13 @@
 
 import { useContacts } from "../contexts/ContactsContext";
+import "../css/ContactList.css"
 
 function ContactList({updateContact}){
     const { contacts, onDelete} = useContacts();
     return (
-        <div>
+        <div className="contacts-container">
             <h2>Contacts</h2>
-            <table>
+            <table className="contacts-table">
                 <thead>
                     <tr>
                         <th>First Name</th>
@@ -16,16 +17,16 @@ function ContactList({updateContact}){
                     </tr>
                 </thead>
                 <tbody>
-                    {contacts.map((contact) => (
-                       <tr key={contact.id}>
+                    {contacts.map(contact => (
+                        <tr key={contact.id}>
                             <td>{contact.firstName}</td>
                             <td>{contact.lastName}</td>
                             <td>{contact.email}</td>
                             <td>
-                                <button onClick={() => updateContact(contact)}>Update</button>
-                                <button onClick={() => onDelete(contact.id)}>Delete</button>
+                                <button className="btn-update" onClick={() => updateContact(contact)}>Update</button>
+                                <button className="btn-delete" onClick={() => onDelete(contact.id)}>Delete</button>
                             </td>
-                       </tr>   
+                        </tr>
                     ))}
                 </tbody>
             </table>

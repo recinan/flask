@@ -32,7 +32,7 @@ export const ContactsProvider = ({children}) => {
     }
 
     const openEditModal = (contact) => {
-        if(isModalOpen) return
+        //if(isModalOpen) return
         setCurrentContact(contact);
         setIsModalOpen(true);
     }

@@ -9,7 +9,7 @@ function ContactPage(){
     return(
         <div>
             <h2>Contact List</h2>
-            <ContactForm></ContactForm>
+            <ContactForm />
             <ContactList updateContact={openEditModal}/>
             {isModalOpen &&
             <div className="modal"> 
@@ -17,6 +17,7 @@ function ContactPage(){
                     <span className="close" onClick={closeModal}>
                         &times;
                     </span>
+                    <h3>Update</h3>
                     <ContactForm existingContact={currentContact} closeModal={closeModal}></ContactForm>
                 </div>
             </div>

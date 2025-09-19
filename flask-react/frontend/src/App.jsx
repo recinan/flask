@@ -10,6 +10,7 @@ import { AuthContextProvider } from "./contexts/AuthContext";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
 import PublicRoute from "./components/auth/PublicRoute";
 import NavBar from "./components/NavBar";
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 function App(){
     return(

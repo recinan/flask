@@ -5,9 +5,9 @@ function HomePage(){
     return(
         <div className="homepage">
             <h1>HomePage</h1>
-            <nav>
+            <nav className="homepage-nav">
                 <ul>
-                    <li><Link to="/contacts">Contacts</Link></li>
+                    <li><Link to="/contacts" className="nav-link">Contacts</Link></li>
                 </ul>
             </nav>
         </div>

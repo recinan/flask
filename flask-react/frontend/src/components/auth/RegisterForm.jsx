@@ -1,5 +1,6 @@
 import React, {useState} from "react";
 import { register } from "../../services/authService";
+import "../../css/RegisterPage.css"
 
 function RegisterForm(){
     const [email, setEmail] = useState("");
@@ -25,12 +26,16 @@ function RegisterForm(){
     
 
     return(
-        <form onSubmit={handleSubmit}>
-            <input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)}/>
-            <input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)}/>
-            <button type="submit" disabled={loading}>{loading ? "Loading...": "Register"}</button>
-            {error && <p style={{color:"red"}}>{error}</p>}
-            {success && <p style={{color:"green"}}>{success}</p>}
+        <form className="register-form" onSubmit={handleSubmit}>
+            <div className="form-group">
+                <input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} required/>
+            </div>
+            <div className="form-group">
+                <input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} required/>
+            </div>
+            <button type="submit" className="register-button" disabled={loading}>{loading ? "Loading...": "Register"}</button>
+            {error && <p className="error-msg">{error}</p>}
+            {success && <p className="success-msg">{success}</p>}
         </form>
     )   
 }

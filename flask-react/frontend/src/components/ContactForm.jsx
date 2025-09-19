@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useContacts } from "../contexts/ContactsContext";
+import "../css/ContactForm.css"
 
 function ContactForm({existingContact = {}}){
     const [firstName, setFirstName] = useState(existingContact.firstName || "")
@@ -11,13 +12,14 @@ function ContactForm({existingContact = {}}){
         e.preventDefault();
         const data = {firstName, lastName, email};
         const success = await saveContact(data, existingContact)
+        if(success && closeModal) closeModal();
     }
 
     const updating = Object.entries(existingContact).length !== 0;
 
     return (
-        <form onSubmit={onSubmit}>
-            <div>
+        <form className="contact-form" onSubmit={onSubmit}>
+            <div className="form-group">
                 <label htmlFor="firstName">First Name: </label>
                 <input 
                 type="text" 
@@ -26,7 +28,7 @@ function ContactForm({existingContact = {}}){
                 onChange={(e) => setFirstName(e.target.value)}
                 />
             </div>
-            <div>
+            <div className="form-group">
                 <label htmlFor="lastName">Last Name: </label>
                 <input 
                 type="text" 
@@ -35,8 +37,8 @@ function ContactForm({existingContact = {}}){
                 onChange={(e) => setLastName(e.target.value)}
                 />
             </div>
-            <div>
-                <label htmlFor="email">First Name: </label>
+            <div className="form-group">
+                <label htmlFor="email">Email: </label>
                 <input 
                 type="text" 
                 id="email"
@@ -44,7 +46,7 @@ function ContactForm({existingContact = {}}){
                 onChange={(e) => setEmail(e.target.value)}
                 />
             </div>
-            <button type="submit">{updating ? "Update":"Create Contact"}</button>
+            <button type="submit" className="form-button">{updating ? "Update":"Create Contact"}</button>
         </form>
     )
 
