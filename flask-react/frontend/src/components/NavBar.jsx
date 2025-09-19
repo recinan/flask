@@ -17,8 +17,8 @@ function NavBar(){
                     </>
                 ) : (
                     <>
-                        <Link className="nav-link" to="/auth/login">Login</Link>
-                        <Link className="nav-link" to="/auth/register">Register</Link>
+                        <Link className="nav-link ms-2" to="/auth/login">Login</Link>
+                        <Link className="nav-link ms-2" to="/auth/register">Register</Link>
                     </>
                 )}
             </div>
