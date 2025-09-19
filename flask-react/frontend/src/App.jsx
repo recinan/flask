@@ -7,22 +7,40 @@ import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import { ContactsProvider } from "./contexts/ContactsContext";
 import { AuthContextProvider } from "./contexts/AuthContext";
+import ProtectedRoute from "./components/auth/ProtectedRoute";
+import PublicRoute from "./components/auth/PublicRoute";
+import NavBar from "./components/NavBar";
 
 function App(){
     return(
         <div className="main-content">
-            <AuthContextProvider>
-                <ContactsProvider>
-                    <BrowserRouter>
+            <BrowserRouter>
+                <AuthContextProvider>
+                    <ContactsProvider>
+                        <NavBar />
                         <Routes>
                             <Route path="/" element={<HomePage />}></Route>
-                            <Route path="/contacts" element={<ContactPage />}></Route>
-                            <Route path="/auth/login" element={<LoginPage />}></Route>
-                            <Route path="/auth/register" element={<RegisterPage />}></Route>
+                            <Route path="/auth/login" element={
+                                <PublicRoute>
+                                    <LoginPage/>
+                                </PublicRoute>
+                            }></Route>
+                            <Route path="/auth/register" element={
+                                <PublicRoute>
+                                    <RegisterPage/>
+                                </PublicRoute>
+                            }></Route>
+
+                            <Route path="/contacts" element={
+                                <ProtectedRoute>
+                                    <ContactPage />
+                                </ProtectedRoute>
+                            }></Route>
+
                         </Routes>
-                    </BrowserRouter>
-                </ContactsProvider>
-            </AuthContextProvider>
+                    </ContactsProvider>
+                </AuthContextProvider>
+            </BrowserRouter>
         </div>
     )
 }

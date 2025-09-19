@@ -8,8 +8,6 @@ function HomePage(){
             <nav>
                 <ul>
                     <li><Link to="/contacts">Contacts</Link></li>
-                    <li><Link to="/auth/login">Login</Link></li>
-                    <li><Link to="/auth/register">Register</Link></li>
                 </ul>
             </nav>
         </div>
