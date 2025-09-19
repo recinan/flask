@@ -19,6 +19,5 @@ export async function login(email, password) {
     }
     const response = await fetch(`${API_URL}/login`,options)
     const data = await response.json()
-    console.log(data)
     return data;
 }
