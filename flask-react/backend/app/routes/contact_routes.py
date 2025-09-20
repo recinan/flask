@@ -5,7 +5,8 @@ from services.contact_service import (
     update_existing_contact,
     delete_existing_contact
 )
-from flask_cors import cross_origin
+from schemas.contact_schema import contact_schema, contacts_schema
+from marshmallow import ValidationError
 
 contact_blueprint = Blueprint("contacts", __name__)
 
@@ -16,11 +17,13 @@ def get_contacts_route():
 
 @contact_blueprint.route("/create_contact", methods=["POST"])
 def create_contact_route():
-    data = request.json 
-    print(data)
+    #data = request.json 
     try:
-        create_new_contact(first_name=data.get("firstName"), last_name=data.get("lastName"), email=data.get("email"))
+        data = contact_schema.load(request.json)
+        create_new_contact(first_name=data["firstName"], last_name=data["lastName"], email=data["email"])
         return jsonify({"message":"User created!"}), 201
+    except ValidationError as validateErr:
+            return jsonify({"message":validateErr.messages}),400
     except ValueError as e:
         return jsonify({"message":str(e)}), 400
     

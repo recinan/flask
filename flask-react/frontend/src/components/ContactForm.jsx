@@ -12,6 +12,9 @@ function ContactForm({existingContact = {}}){
         e.preventDefault();
         const data = {firstName, lastName, email};
         const success = await saveContact(data, existingContact)
+        setFirstName("");
+        setLastName("");
+        setEmail("");
         if(success && closeModal) closeModal();
     }
 
