@@ -1,5 +1,6 @@
 import React, {useState} from "react";
 import { register } from "../../services/authService";
+import { useNavigate } from "react-router-dom";
 import "../../css/RegisterPage.css"
 
 function RegisterForm(){
@@ -9,6 +10,7 @@ function RegisterForm(){
     const [error, setError] = useState("");
     const [success, setSuccess] = useState("");
     const [loading, setLoading] = useState(false);
+    const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -16,19 +18,23 @@ function RegisterForm(){
         setError("");
         setSuccess("");
 
-        if(password === password2){
-            try{
-            const message = await register(email, password)
-            setSuccess(message)
-            }catch(err){
-                setError(err.message);
-            }finally{ setLoading(false)}
-        }else{
-            alert("Passwords doesn't match!!!")
+        if(password !== password2){
+            setError("Passwords don't match!");
+            setLoading(false);
             setPassword("");
             setPassword2("");
-            setLoading(false);
+            return;
         }
+
+        try{
+            const message = await register(email, password)
+            setSuccess(message)
+            navigate("/auth/login")
+        }catch(err){
+            setError(err.message);
+        }finally{ setLoading(false)}
+        
+
     }
 
     return(
