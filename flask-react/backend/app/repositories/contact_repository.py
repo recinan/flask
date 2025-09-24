@@ -1,5 +1,5 @@
 from models.contact_model import Contact
-from config import db
+from app import db
 
 def get_all_contacts():
     return Contact.query.all()

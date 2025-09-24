@@ -1,31 +1,9 @@
-from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
-from flask_cors import CORS
-from flask_jwt_extended import JWTManager
+import os
+from dotenv import load_dotenv
 
-db = SQLAlchemy()
-jwt = JWTManager()
+load_dotenv()
 
-def create_app():
-    app = Flask(__name__)
-    CORS(
-        app,
-        resources={r"/*": {"origins": "http://localhost:5173"}},
-        supports_credentials=True,
-        allow_headers=["Content-Type", "Authorization"],
-        methods=["GET", "POST", "PATCH", "DELETE", "OPTIONS"]
-    )
-
-    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///mydatabase.db"
-    app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-    app.config["JWT_SECRET_KEY"] = "supersecretjwtkey"
-
-    db.init_app(app)
-    jwt.init_app(app)
-
-    from routes.contact_routes import contact_blueprint
-    from routes.user_routes import user_blueprint
-    app.register_blueprint(contact_blueprint)
-    app.register_blueprint(user_blueprint)
-
-    return app
+class Config:
+    SQLALCHEMY_DATABASE_URI = os.getenv("SQLALCHEMY_DATABASE_URI", "sqlite:///mydatabase.db")
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
+    JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY","supersecretjwtkey")

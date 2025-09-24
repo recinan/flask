@@ -1,4 +1,4 @@
-from config import db
+from app import db
 
 class Contact(db.Model):
     id = db.Column(db.Integer, primary_key=True)
